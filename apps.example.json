@@ -1,0 +1,21 @@
+{
+  "apps": [
+    {
+      "id": "everything-portable",
+      "name": "Everything",
+      "exe": "D:\\PortableApps\\Everything\\Everything.exe",
+      "publisher": "voidtools",
+      "version": "1.4.1",
+      "startMenuFolder": "Portable Apps"
+    },
+    {
+      "id": "notepadpp-portable",
+      "name": "Notepad++ Portable",
+      "exe": "D:\\PortableApps\\Notepad++\\notepad++.exe",
+      "publisher": "Notepad++ Team",
+      "version": "8.6.0",
+      "startMenuFolder": "Portable Apps",
+      "arguments": ""
+    }
+  ]
+}

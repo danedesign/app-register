@@ -1,0 +1,12 @@
+{
+  "apps": [
+    {
+      "id": "portable-app-register-test",
+      "name": "Portable App Register Test",
+      "exe": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "publisher": "Test",
+      "version": "1.0.0",
+      "startMenuFolder": "Portable Apps Test"
+    }
+  ]
+}
