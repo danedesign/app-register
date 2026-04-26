@@ -2,6 +2,12 @@
 
 This project is a Windows utility for registering portable/green software so it behaves more like normally installed software.
 
+## Maintenance Rule
+
+Update this `AGENTS.md` whenever a new feature is added, an important bug is found or fixed, the user clarifies a product requirement, or a workflow/detail is important enough that losing chat history would slow down future work.
+
+This file is the continuity record for future agents. Keep it current.
+
 ## Product Goal
 
 The user has many portable Windows apps and games. After reinstalling Windows or moving systems, they want a quick way to make those apps appear in the Start menu and, where possible, in Windows "Installed apps".
