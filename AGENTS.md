@@ -15,7 +15,7 @@ The user has many portable Windows apps and games. After reinstalling Windows or
 The preferred workflow is non-technical:
 
 1. Open a small window.
-2. Drag one or more `.exe` files into it.
+2. Drag one or more `.exe`, `.bat`, or `.cmd` files into it.
 3. Choose a readable app name from suggestions, or type one manually.
 4. The app appears in the Start menu.
 5. The management window shows registered apps and can remove them.
@@ -26,6 +26,8 @@ The user wants this to feel close to native installation, but they understand th
 
 - The UI should be simple and drag-and-drop oriented.
 - The user does not want to maintain a JSON manifest manually for the normal workflow.
+- GUI drag-and-drop supports `.exe`, `.bat`, and `.cmd`.
+- `.bat` / `.cmd` entries should create Start menu shortcuts and installed-app records, but should not write `App Paths`; reserve `App Paths` for `.exe`.
 - Naming matters. Portable executable names are often messy, such as `ps2019.exe`, `GTA-VC.exe`, `gamemd.exe`, or `ra2md.exe`.
 - The naming dialog should offer multiple suggestions, similar to music tagging apps that suggest possible song names/lyrics.
 - The user wants to be able to manually choose or edit the final name before registration.

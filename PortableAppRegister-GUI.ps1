@@ -16,6 +16,19 @@ $StartMenuRoot = [Environment]::GetFolderPath("Programs")
 $DataRoot = Join-Path ([Environment]::GetFolderPath("ApplicationData")) $ToolName
 $DatabasePath = Join-Path $DataRoot "apps.json"
 
+function Test-SupportedLaunchFile {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    $extension = [System.IO.Path]::GetExtension($Path).ToLowerInvariant()
+    return $extension -in @(".exe", ".bat", ".cmd")
+}
+
+function Test-AppPathsSupported {
+    param([Parameter(Mandatory = $true)][string]$Path)
+
+    return [System.IO.Path]::GetExtension($Path).ToLowerInvariant() -eq ".exe"
+}
+
 function Get-StableId {
     param([Parameter(Mandatory = $true)][string]$Path)
 
@@ -681,8 +694,8 @@ function Register-PortableExe {
         throw "File not found: $fullPath"
     }
 
-    if ([System.IO.Path]::GetExtension($fullPath).ToLowerInvariant() -ne ".exe") {
-        throw "Only .exe files are supported."
+    if (-not (Test-SupportedLaunchFile -Path $fullPath)) {
+        throw "Only .exe, .bat, and .cmd files are supported."
     }
 
     $step = "read app metadata"
@@ -736,11 +749,13 @@ function Register-PortableExe {
         Set-DwordValue -Path $uninstallKey -Name "NoModify" -Value 1
         Set-DwordValue -Path $uninstallKey -Name "NoRepair" -Value 1
 
-        $step = "write App Paths registry"
-        $appPathKey = Join-Path $AppPathsRoot $exeName
-        New-Item -Path $appPathKey -Force | Out-Null
-        Set-StringValue -Path $appPathKey -Name "(default)" -Value $fullPath
-        Set-StringValue -Path $appPathKey -Name "Path" -Value $installLocation
+        if (Test-AppPathsSupported -Path $fullPath) {
+            $step = "write App Paths registry"
+            $appPathKey = Join-Path $AppPathsRoot $exeName
+            New-Item -Path $appPathKey -Force | Out-Null
+            Set-StringValue -Path $appPathKey -Name "(default)" -Value $fullPath
+            Set-StringValue -Path $appPathKey -Name "Path" -Value $installLocation
+        }
 
         $step = "remove old shortcut"
         if (Test-Path -LiteralPath $uninstallKey) {
@@ -877,7 +892,7 @@ $topPanel.Height = 126
 $form.Controls.Add($topPanel)
 
 $title = New-Object System.Windows.Forms.Label
-$title.Text = "Drop portable .exe files here"
+$title.Text = "Drop portable .exe, .bat, or .cmd files here"
 $title.AutoSize = $false
 $title.TextAlign = "MiddleCenter"
 $title.Dock = "Top"
@@ -894,7 +909,7 @@ $hint.Height = 36
 $topPanel.Controls.Add($hint)
 
 $status = New-Object System.Windows.Forms.Label
-$status.Text = "Waiting for .exe files"
+$status.Text = "Waiting for launch files"
 $status.AutoSize = $false
 $status.TextAlign = "MiddleLeft"
 $status.Dock = "Bottom"
@@ -989,9 +1004,9 @@ function Upsert-AppListItem {
 function Add-ExeFiles {
     param([Parameter(Mandatory = $true)]$Files)
 
-    $exeFiles = @($Files | Where-Object { [System.IO.Path]::GetExtension($_).ToLowerInvariant() -eq ".exe" })
+    $exeFiles = @($Files | Where-Object { Test-SupportedLaunchFile -Path $_ })
     if ($exeFiles.Count -eq 0) {
-        $status.Text = "No .exe files found"
+        $status.Text = "No supported .exe, .bat, or .cmd files found"
         return
     }
 
